@@ -1,0 +1,39 @@
+version: "3.6"
+services:
+  api:
+    container_name: tb-api
+    depends_on:
+      - db
+    build:
+      context: ./api
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./api/app:/app/app
+    restart: "no"
+    env_file:
+      - ./.env
+    ports:
+      - "80:80"
+  compute:
+    container_name: tb-compute
+    build:
+      context: ./compute
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./compute/app:/app/app
+    restart: "no"
+    env_file:
+      - ./.env
+  db:
+    container_name: tb-db
+    image: "neo4j"
+    volumes:
+      - ./db/data:/data
+      - ./db/logs:/logs
+      - ./db/import:/var/lib/neo4j/import
+      - ./db/plugins:/plugins
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    env_file:
+      - ./.env

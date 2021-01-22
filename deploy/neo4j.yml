@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: neo4j-deployment
+  labels:
+    app: neo4j
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: neo4j
+  template:
+    metadata:
+      labels:
+        app: neo4j
+    spec:
+      volumes:
+        - name: db-storage
+          persistentVolumeClaim:
+            claimName: db-claim
+      containers:
+        - name: neo4j
+          image: neo4j:latest
+          ports:
+            - containerPort: 7474
+            - containerPort: 7687
+          env:
+            - name: NEO4J_AUTH_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: neo4j-username
+            - name: NEO4J_AUTH_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: neo4j-password
+            - name: NEO4J_AUTH
+              value: $(NEO4J_AUTH_USER)/$(NEO4J_AUTH_PASS)
+          resources:
+            limits:
+              memory: "1Gi"
+              cpu: "250m"
+          volumeMounts:
+            - mountPath: "/data"
+              name: db-storage
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: neo4j-service
+spec:
+  selector:
+    app: neo4j
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 7474
+      targetPort: 7474

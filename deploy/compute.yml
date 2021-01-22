@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: compute-deployment
+  labels:
+    app: compute
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: compute
+  template:
+    metadata:
+      labels:
+        app: compute
+    spec:
+      containers:
+        - name: compute
+          image: tb-compute:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: NEO4J_AUTH_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: neo4j-username
+            - name: NEO4J_AUTH_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: neo4j-password
+          resources:
+            limits:
+              memory: "2048Mi"
+              cpu: "750m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: compute-service
+spec:
+  selector:
+    app: compute
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30003

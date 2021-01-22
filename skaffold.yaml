@@ -1,0 +1,20 @@
+apiVersion: skaffold/v2beta9
+kind: Config
+metadata:
+  name: backend
+build:
+  artifacts:
+    - image: gcr.io/dv-travel-buddy/tb-api
+      context: api
+    - image: gcr.io/dv-travel-buddy/tb-compute
+      context: compute
+deploy:
+  kubectl:
+    manifests:
+      - deploy/db-configmap.yml
+      - deploy/db-secret.yml
+      - deploy/db-volume.yml
+      - deploy/neo4j.yml
+      - deploy/api.yml
+      - deploy/compute.yml
+      - deploy/ingress.yml

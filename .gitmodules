@@ -1,0 +1,6 @@
+[submodule "api"]
+	path = api
+	url = git@github.com:TheTravelBuddy/api.git
+[submodule "compute"]
+	path = compute
+	url = git@github.com:TheTravelBuddy/compute.git
