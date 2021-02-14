@@ -1,9 +1,9 @@
 version: "3.6"
 services:
-  api:
+  backend-api:
     container_name: tb-api
     depends_on:
-      - db
+      - backend-db
     build:
       context: ./api
       dockerfile: Dockerfile.dev
@@ -14,7 +14,7 @@ services:
       - ./.env
     ports:
       - "80:80"
-  compute:
+  backend-compute:
     container_name: tb-compute
     build:
       context: ./compute
@@ -24,7 +24,9 @@ services:
     restart: "no"
     env_file:
       - ./.env
-  db:
+    ports:
+      - "81:80"
+  backend-db:
     container_name: tb-db
     image: "neo4j"
     volumes:
