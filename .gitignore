@@ -1,5 +1,6 @@
 .env
 *.bak
 /db
+*.log
 
 deploy/db-secret.yml
