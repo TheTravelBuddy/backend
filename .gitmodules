@@ -4,3 +4,6 @@
 [submodule "compute"]
 	path = compute
 	url = git@github.com:TheTravelBuddy/compute.git
+[submodule "proxy"]
+	path = proxy
+	url = git@github.com:kenmickles/heroku-redirect.git

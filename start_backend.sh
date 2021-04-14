@@ -63,12 +63,19 @@ wait_while proxy_not_ready
 PROXY_URL=$(get_url)
 echo "Done."
 
+printf "Deploying to Heroku..."
+heroku config:add NEW_BASE_URL="$PROXY_URL" -a travel-buddy-proxy &>/dev/null &
+wait_for_finish $!
+echo "Done."
+
 echo
 echo "${BLUE}${BOLD}Server Build Logs:${RESET} ${BOLD}cat server-build.log${RESET}"
 echo "${BLUE}${BOLD}Server Run Logs:${RESET} ${BOLD}docker-compose logs -f${RESET}"
 echo
 echo "${MAGENTA}${BOLD}NGROK Dashboard:${RESET} ${BOLD}$NGROK_DASHBOARD${RESET}"
 echo "${GREEN}${BOLD}Proxy URL:${RESET} ${BOLD}$PROXY_URL${RESET}"
+echo
+echo "${BLUE}${BOLD}Deployed To:${RESET} ${BOLD}https://travel-buddy-proxy.herokuapp.com/${RESET}"
 echo
 
 if command -v xclip &>/dev/null; then
